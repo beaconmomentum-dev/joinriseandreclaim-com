@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rise & Reclaim - Where Phoenix Moments Begin | Join the Community</title>
+    <meta name="description" content="Join Rise & Reclaim - A community for those who've survived the fire and are ready to rise. Battle-tested support for your comeback journey.">
+    <meta property="og:title" content="Rise & Reclaim - Where Phoenix Moments Begin">
+    <meta property="og:description" content="If you've been through your own fire—loss, betrayal, failure, or starting over—you're not alone. Join a community of people who understand.">
+    <meta property="og:image" content="https://joinriseandreclaim.com/rise-reclaim-og.jpg">
+    <meta property="og:url" content="https://joinriseandreclaim.com">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1F2937;
+            background: #FFFFFF;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #0F766E;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0F766E;
+            text-decoration: none;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #1F2937;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #0F766E;
+        }
+        
+        .join-btn {
+            background: linear-gradient(135deg, #0F766E 0%, #D97706 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0F766E 0%, #D97706 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .fire-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            line-height: 1.2;
+        }
+        
+        .highlight {
+            color: #D97706;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+        
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        .hero-cta {
+            display: inline-block;
+            background: white;
+            color: #0F766E;
+            padding: 1.25rem 2.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Pricing Section */
+        .pricing-section {
+            padding: 5rem 2rem;
+            background: #F3F4F6;
+            text-align: center;
+        }
+        
+        .pricing-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pricing-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0F766E 0%, #D97706 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: #0F766E;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pricing-period {
+            font-size: 1.5rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-description {
+            font-size: 1.125rem;
+            color: #6B7280;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .pricing-features {
+            text-align: left;
+            margin: 2rem 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #F3F4F6;
+            border-radius: 0.5rem;
+        }
+        
+        .feature-icon {
+            color: #0F766E;
+            font-size: 1.5rem;
+        }
+        
+        .feature-text {
+            flex: 1;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            color: #0F766E;
+            margin-bottom: 0.25rem;
+        }
+        
+        .pricing-cta {
+            background: linear-gradient(135deg, #0F766E 0%, #D97706 100%);
+            color: white;
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        
+        .pricing-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(15, 118, 110, 0.3);
+        }
+        
+        .guarantee {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #FEF3C7;
+            border-radius: 0.5rem;
+            color: #92400E;
+            font-weight: 500;
+        }
+        
+        /* Story Section */
+        .story-section {
+            padding: 5rem 2rem;
+            background: white;
+        }
+        
+        .story-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .story-image {
+            position: relative;
+        }
+        
+        .story-image img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .story-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .story-content p {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: #6B7280;
+        }
+        
+        /* Community Features */
+        .features-section {
+            padding: 5rem 2rem;
+            background: #F3F4F6;
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header p {
+            font-size: 1.125rem;
+            color: #6B7280;
+        }
+        
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .feature-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: #6B7280;
+            line-height: 1.8;
+        }
+        
+        /* Mission Section */
+        .mission-section {
+            padding: 5rem 2rem;
+            background: white;
+        }
+        
+        .mission-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .mission-progress {
+            background: #F3F4F6;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .progress-bar-container {
+            background: #E5E7EB;
+            height: 40px;
+            border-radius: 2rem;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(135deg, #0F766E 0%, #D97706 100%);
+            height: 100%;
+            width: 7%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .mission-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .mission-stat {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+        
+        .mission-stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #0F766E;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Testimonials */
+        .testimonials-section {
+            padding: 5rem 2rem;
+            background: #F3F4F6;
+        }
+        
+        .testimonials-grid {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: #6B7280;
+            line-height: 1.8;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #0F766E;
+        }
+        
+        .testimonial-role {
+            font-size: 0.875rem;
+            color: #9CA3AF;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 5rem 2rem;
+            background: white;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+        
+        .faq-item {
+            background: #F3F4F6;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .faq-question {
+            font-weight: 600;
+            color: #0F766E;
+            margin-bottom: 0.5rem;
+        }
+        
+        .faq-answer {
+            color: #6B7280;
+            line-height: 1.8;
+        }
+        
+        /* CTA Section */
+        .final-cta-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #0F766E 0%, #D97706 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .final-cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .final-cta-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .final-cta-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .final-cta-btn {
+            background: white;
+            color: #0F766E;
+            padding: 1.25rem 3rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .final-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1F2937;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h4 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section a {
+            display: block;
+            color: #9CA3AF;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #D97706;
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid #374151;
+            text-align: center;
+            color: #9CA3AF;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-stats,
+            .features-grid,
+            .testimonials-grid,
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .story-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .mission-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">RISE & RECLAIM</a>
+            <div class="nav-menu">
+                <a href="#story" class="nav-link">Our Story</a>
+                <a href="#community" class="nav-link">Community</a>
+                <a href="#mission" class="nav-link">Mobile Mission</a>
+                <a href="https://digitalgrandpa.org" class="nav-link">Digital Grandpa</a>
+                <button class="join-btn" id="nav-join-btn">JOIN THE COMMUNITY</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="fire-badge">🔥 YOU'VE SURVIVED THE FIRE 🔥</div>
+            <h1>You've Survived the Fire.<br>Now It's Time to <span class="highlight">Reclaim Your Life</span>.</h1>
+            <p class="hero-subtitle">A battle-tested survival path for those who've been knocked down, burned out, and are finally ready to rise with clarity, courage, and purpose.</p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">300+</div>
+                    <div class="stat-label">RISING TOGETHER</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">94%</div>
+                    <div class="stat-label">IMPROVED OUTLOOK</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">COMMUNITY SUPPORT</div>
+                </div>
+            </div>
+            
+            <a href="#join" class="hero-cta">🔥 Start My Comeback Journey Now</a>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="join" class="pricing-section">
+        <div class="pricing-container">
+            <div class="pricing-badge">COMMUNITY MEMBERSHIP</div>
+            <div class="pricing-amount">$247</div>
+            <div class="pricing-period">per year</div>
+            <p class="pricing-description">Everything you need to rise from the ashes and reclaim your life, with full community support and expert guidance.</p>
+            
+            <div class="pricing-features">
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Weekly Live Sessions with Bob</div>
+                        <div>Direct access to guidance, Q&A, and community connection</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Complete Resource Library</div>
+                        <div>5 comprehensive guides: Survival, Focus, Detox, Action, Battle Plan</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Private Community Forums</div>
+                        <div>Connect with others who understand your journey</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Accountability Partnerships</div>
+                        <div>Get matched with someone who gets it</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Progress Tracking Tools</div>
+                        <div>Measure your growth and celebrate wins</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Monthly Community Events</div>
+                        <div>Virtual gatherings, workshops, and celebrations</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="pricing-cta" id="pricing-join-btn">JOIN RISE & RECLAIM - $247/YEAR</button>
+            
+            <div class="guarantee">
+                🛡️ 30-Day Satisfaction Guarantee - If this isn't for you, get a full refund. No questions asked.
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="story" class="story-section">
+        <div class="story-container">
+            <div class="story-image">
+                <img src="bob-profile-photo.jpg" alt="Bob Burr - Digital Grandpa">
+            </div>
+            <div class="story-content">
+                <h2>This Isn't Theory. It's Survival.</h2>
+                <p>I'm Bob Burr, and I've been where you are. Lost everything after military service. Rebuilt from nothing. Lost it again. Faced my darkest moment and chose life.</p>
+                <p>Rise & Reclaim isn't built on shallow self-help or performative positivity. It's built on the battle-tested wisdom of someone who's walked through fire multiple times and learned how to not just survive, but thrive.</p>
+                <p>This community exists because I know what it's like to feel alone in your struggle. To think no one understands. To wonder if there's a way forward.</p>
+                <p><strong>There is. And you don't have to walk it alone.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Features -->
+    <section id="community" class="features-section">
+        <div class="section-header">
+            <h2>What You Get Inside</h2>
+            <p>Real tools, real support, real transformation</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-card-icon">👥</div>
+                <h3>Peer Support Groups</h3>
+                <p>Connect with others who've been through similar struggles and understand your journey</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon">📚</div>
+                <h3>Resource Library</h3>
+                <p>Access proven frameworks, tools, and guides for every stage of your comeback</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon">💼</div>
+                <h3>Skills & Employment</h3>
+                <p>Practical support for building a sustainable future and finding meaningful work</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon">🛡️</div>
+                <h3>Safe Spaces</h3>
+                <p>Judgment-free zones where you can be real about your struggles and victories</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon">🎯</div>
+                <h3>Weekly Workshops</h3>
+                <p>Live training on resilience, purpose, relationships, and practical life skills</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon">🤝</div>
+                <h3>Mentorship Matching</h3>
+                <p>Get paired with someone who's further along the path and can guide you forward</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Mission 2026 -->
+    <section id="mission" class="mission-section">
+        <div class="mission-container">
+            <div class="section-header">
+                <h2>Mobile Mission 2026</h2>
+                <p>Taking Rise & Reclaim on the road to reach those who need it most</p>
+            </div>
+            <div class="mission-progress">
+                <h3 style="color: #0F766E; margin-bottom: 1rem;">$70,000 raised toward $1,000,000 goal</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar">7%</div>
+                </div>
+                <div class="mission-stats">
+                    <div class="mission-stat">
+                        <div class="mission-stat-number">$70K</div>
+                        <div>Raised So Far</div>
+                    </div>
+                    <div class="mission-stat">
+                        <div class="mission-stat-number">$1M</div>
+                        <div>Goal for Mobile RV</div>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 1.125rem; color: #6B7280; margin: 2rem 0;">We're building a mobile community center to bring Rise & Reclaim directly to veterans, formerly incarcerated individuals, and at-risk youth across America. Every membership helps fuel this mission.</p>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <div class="section-header">
+            <h2>Real Stories from Real People</h2>
+            <p>Hear from those who've walked this path</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Rise & Reclaim gave me the community I desperately needed after leaving prison. These people don't judge—they understand. And that makes all the difference."</p>
+                <div class="testimonial-author">Michael R.</div>
+                <div class="testimonial-role">Formerly Incarcerated, Now Thriving</div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"After 20 years in the military, I felt lost in civilian life. This community helped me find my purpose again and build a life I'm proud of."</p>
+                <div class="testimonial-author">Sarah T.</div>
+                <div class="testimonial-role">Marine Veteran</div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"I joined when I was at my lowest point. The accountability, support, and real talk saved my life. I'm not exaggerating."</p>
+                <div class="testimonial-author">David K.</div>
+                <div class="testimonial-role">Recovery Member, 2 Years Strong</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="section-header">
+            <h2>Common Questions</h2>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">Is this really worth $247?</div>
+                <div class="faq-answer">That's less than $1/day for weekly live sessions with Bob, complete resource library, community support, and accountability partnerships. Compare that to therapy ($150/session), coaching ($500+/month), or staying stuck (priceless).</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Can I cancel anytime?</div>
+                <div class="faq-answer">Yes, absolutely. We also offer a 30-day satisfaction guarantee. If this isn't for you, get a full refund—no questions asked.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Is this for me if I'm not a veteran?</div>
+                <div class="faq-answer">Yes! While many members are veterans, we also serve formerly incarcerated individuals, those in recovery, and anyone who's been through their own fire and is ready to rise.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">What if I can't afford it right now?</div>
+                <div class="faq-answer">We offer payment plans and scholarships for those in genuine need. Email bob@digitalgrandpa.org to discuss options.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">How is this different from other programs?</div>
+                <div class="faq-answer">This isn't theory from someone who read about struggle. It's battle-tested wisdom from someone who's lived it. No fluff, no upsells, just real support from real people.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta-section">
+        <div class="final-cta-content">
+            <h2>Your Phoenix Moment Starts Now</h2>
+            <p>You've survived the fire. Now it's time to rise with a community that understands your journey.</p>
+            <button class="final-cta-btn" id="final-join-btn">JOIN RISE & RECLAIM - $247/YEAR</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>Rise & Reclaim</h4>
+                <p style="color: #9CA3AF;">A battle-tested survival path for those ready to rise.</p>
+                <p style="color: #9CA3AF; margin-top: 1rem;">Part of the Beacon Momentum Collective</p>
+            </div>
+            <div class="footer-section">
+                <h4>Divisions</h4>
+                <a href="https://digitalgrandpa.org">Digital Grandpa</a>
+                <a href="https://joinriseandreclaim.com">Rise & Reclaim</a>
+                <a href="https://beaconmomentum.com/labs.html">Beacon Labs</a>
+                <a href="https://beaconmomentum.com">Beacon Momentum</a>
+            </div>
+            <div class="footer-section">
+                <h4>Community</h4>
+                <a href="#join">Join Now</a>
+                <a href="#story">Our Story</a>
+                <a href="#mission">Mobile Mission</a>
+                <a href="https://riseandreclaim.community">Member Hub</a>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <a href="mailto:bob@digitalgrandpa.org">Email Bob</a>
+                <a href="https://digitalgrandpa.org">Digital Grandpa</a>
+                <a href="https://beaconmomentum.com">Beacon Momentum</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Rise & Reclaim | Part of Beacon Momentum | All rights reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        // Join button handlers - placeholder for Stripe integration
+        document.getElementById('nav-join-btn').addEventListener('click', function() {
+            document.getElementById('join').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('pricing-join-btn').addEventListener('click', function() {
+            alert('Stripe payment integration will be added here');
+        });
+
+        document.getElementById('final-join-btn').addEventListener('click', function() {
+            document.getElementById('join').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
