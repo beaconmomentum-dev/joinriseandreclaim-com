@@ -654,7 +654,7 @@
                 </div>
             </div>
             
-            <a href="#join" class="hero-cta">🔥 Start My Comeback Journey Now</a>
+            <a href="https://buy.stripe.com/28EdR872V5sVb5NaO76J200" class="hero-cta">🔥 Start My Comeback Journey Now</a>
         </div>
     </section>
 
@@ -900,17 +900,20 @@
     </footer>
 
     <script>
-        // Join button handlers - placeholder for Stripe integration
+        // Stripe Payment Link
+        const STRIPE_PAYMENT_URL = 'https://buy.stripe.com/28EdR872V5sVb5NaO76J200';
+        
+        // Join button handlers - redirect to Stripe checkout
         document.getElementById('nav-join-btn').addEventListener('click', function() {
-            document.getElementById('join').scrollIntoView({ behavior: 'smooth' });
+            window.location.href = STRIPE_PAYMENT_URL;
         });
 
         document.getElementById('pricing-join-btn').addEventListener('click', function() {
-            alert('Stripe payment integration will be added here');
+            window.location.href = STRIPE_PAYMENT_URL;
         });
 
         document.getElementById('final-join-btn').addEventListener('click', function() {
-            document.getElementById('join').scrollIntoView({ behavior: 'smooth' });
+            window.location.href = STRIPE_PAYMENT_URL;
         });
 
         // Smooth scrolling for anchor links
